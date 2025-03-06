@@ -1,3 +1,4 @@
+import { useTheme } from '@/components/themeProvider';
 import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
@@ -77,33 +78,47 @@ function getTimeInteval(milliseconds:number) {
   useEffect(() => {
     getUpcomingContests();
   }, [contestList]);
+  const { theme } = useTheme(); // 获取当前主题
+  
+  const dynamicStyles = {
+    containerBorder: theme === 'dark' 
+      ? '2px solid rgba(255,255,255,0.7)' 
+      : '2px solid rgb(0, 166, 255)',
+    textColor: theme === 'dark' ? 'rgba(255,255,255,0.9)' : '#333',
+    rowBorder: theme === 'dark' 
+      ? '1px solid rgba(255,255,255,0.3)' 
+      : '1px solid rgb(146, 201, 255)'
+  };
 
-// 在组件文件顶部添加样式定义
 const gridStyles = {
   headerRow: {
-    borderBottom: '2px gray solid', // 标题行底部边框
-    margin: 0, // 覆盖 Bootstrap 的默认外边距
+    borderBottom: theme === 'dark' 
+      ? '2px solid rgba(255,255,255,0.5)' 
+      : '2px gray solid',
+    margin: 0,
+    color: dynamicStyles.textColor
   },
   dataRow: {
-    borderBottom: '1px solid rgb(146, 201, 255)', // 数据行底部边框
-    margin: 0
+    borderBottom: dynamicStyles.rowBorder,
+    margin: 0,
+    color: dynamicStyles.textColor
   },
   colBorder: {
-    borderRight: '1px solid rgb(146, 201, 255)', // 列右边框
-    padding: '0.75rem' // 确保padding与border协调
+    borderRight: dynamicStyles.rowBorder,
+    padding: '0.75rem'
   },
   lastCol: {
-    borderRight: 'none' // 最后一列去除右边框
+    borderRight: 'none'
   }
 };
 
 
   return (
     <>
-    
-<Container style={{ overflow: 'auto', border: '2px solid rgb(0, 166, 255)'}} className='text-center'>
+  <Container className='text-center' style={{ overflow: 'auto',border: dynamicStyles.containerBorder,
+  backgroundColor: theme === 'dark' ? 'rgba(0,0,0,0.85)' : 'white'}}>
   {isLoading && (<p>Loading...</p>)}
-  <Row style={{borderBottom:'1px solid black'}}><h1>Upcoming Contests</h1></Row>
+  <Row style={gridStyles.headerRow}><h1>Upcoming Contests</h1></Row>
   <Row style={gridStyles.headerRow}>
     <Col className='col-1' style={gridStyles.colBorder}><b>Contest ID</b></Col>
     <Col className='col-5' style={gridStyles.colBorder}><b>Contest Name</b></Col>
