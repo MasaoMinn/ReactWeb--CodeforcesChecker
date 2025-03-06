@@ -43,7 +43,7 @@ async function getContestList() {
 }
 function getUpcomingContests() {
   const upcoming = contestList.filter(contest => contest.phase == "BEFORE");
-  setUpcomingContests(upcoming);
+  setUpcomingContests(upcoming.toReversed());
 }
 function getTimeInteval(milliseconds:number) {
   // 将毫秒数转换为秒数
@@ -61,9 +61,12 @@ function getTimeInteval(milliseconds:number) {
   let minutes = Math.floor(totalSeconds / 60);
 
   // 格式化输出
-  if(days!=0) return `${String(days).padStart(2, '0')}day${days==1?'':'s'} ${String(hours).padStart(2, '0')}hour${hours==1?'':'s'} ${String(minutes).padStart(2, '0')}minute${minutes==1?'':'s'} `;
-  if(hours!=0) return `${String(hours).padStart(2, '0')}hour${hours==1?'':'s'} ${String(minutes).padStart(2, '0')}minute${minutes==1?'':'s'} `;
-  return `${String(minutes).padStart(2, '0')}minute${minutes==1?'':'s'} `
+  if(days!=0) return (<>
+    <b>{String(days)}</b> day{days==1?'':'s'} <b>{String(hours)}</b> hour{hours==1?'':'s'} <b>{String(minutes)}</b> minute{minutes==1?'':'s'}</>) ;
+  if(hours!=0) return (<>
+    <b>{String(hours)}</b> hour{hours==1?'':'s'} <b>{String(minutes)}</b> minute{minutes==1?'':'s'}</>) ;
+  return (<>
+    <b>{String(minutes)}</b> minute{minutes==1?'':'s'}</>) ;
 }
   // 在组件挂载时获取竞赛列表
   useEffect(() => {
