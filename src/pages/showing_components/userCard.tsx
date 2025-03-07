@@ -7,6 +7,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useTheme } from '../../components/themeProvider';
 import styled from 'styled-components';
+import FortuneBtn from '../../components/fortuneButton';
 
 interface User {
   lastName: string;
@@ -155,7 +156,8 @@ const renderHandle = () => {
               <Row>当前Rating: {cfUser.rating || '暂无数据'}</Row>
               <Row>上次登录时间： {(new Date(cfUser!.lastOnlineTimeSeconds * 1000)).toLocaleString()}</Row>
             </Card.Text>
-            <Button variant="primary" onClick={fetchUser} disabled={isLoading}>{isLoading ? '更新中...' : '刷新数据'}</Button>
+            <Button variant={`${useTheme().theme}`} style={{border:'2px skyblue solid'}} onClick={fetchUser} disabled={isLoading}>{isLoading ? '更新中...' : '刷新数据'}</Button>
+            <FortuneBtn />
           </Card.Body>
           </Col>
           </Row>
