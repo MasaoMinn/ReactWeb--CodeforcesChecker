@@ -121,8 +121,20 @@ const renderHandle = () => {
   }
 }
   return (
-    <Card style={{ width: '44vw', margin: '0 auto' ,height: 'auto', overflow: 'auto', marginTop: '3vw'}} 
-    bg={`${useTheme().theme.toLowerCase()}`} key={`${useTheme().theme}`} text={`${useTheme().theme}` === 'light' ? 'dark' : 'white'}>
+    <Card style={{ 
+    width: 'fit-content',    // ✨ 关键修改点
+    maxWidth: '90vw',        // 防止子元素过宽导致的溢出
+    minWidth: '20vw',        // 可选：设置最小宽度避免收缩过小
+    height: 'auto',
+    overflow: 'auto',
+    margin: '0 auto',
+    marginTop: '3vw',
+    display: 'block',        // （覆盖之前的 inline-block）
+    boxSizing: 'border-box'     // 正确计算宽度
+  }}
+  bg={`${useTheme().theme.toLowerCase()}`} 
+  key={`${useTheme().theme}`} 
+  text={`${useTheme().theme}` === 'light' ? 'dark' : 'white'}>
       {isLoading && <div className="text-center p-3"><Spinner animation="border" /></div>}
       
       {error && (
@@ -151,10 +163,12 @@ const renderHandle = () => {
           </Col>
           <Col>
           <Card.Body>
-            <div style={{whiteSpace:'nowrap', fontSize:'1.5em'}}>Your handle: <StyledHandle1>{cfUser.handle.substring(0,1)}</StyledHandle1><StyledHandle2>{cfUser.handle.substring(1)}</StyledHandle2></div>
-            <Card.Text>
-              <Row>当前Rating: {cfUser.rating || '暂无数据'}</Row>
-              <Row>上次登录时间： {(new Date(cfUser!.lastOnlineTimeSeconds * 1000)).toLocaleString()}</Row>
+            <div style={{fontSize:'1.5em'}}>Your handle: <StyledHandle1>{cfUser.handle.substring(0,1)}</StyledHandle1><StyledHandle2>{cfUser.handle.substring(1)}</StyledHandle2></div>
+            <Card.Text style={{whiteSpace:'nowrap'}}>
+              <Row><Col>当前Rating/最大Rating: <b>{cfUser.rating || '暂无数据'}/{cfUser.maxRating || '暂无数据'}</b></Col></Row>
+              <Row><Col>名字：{cfUser.firstName+' '+cfUser.lastName ||'暂无数据'}</Col></Row>
+              <Row><Col>上次登录时间： {(new Date(cfUser!.lastOnlineTimeSeconds * 1000)).toLocaleString()}</Col></Row>
+              <Row><Col>所属组织：{cfUser.organization||'暂无数据'}</Col></Row>
             </Card.Text>
             <Button variant={`${useTheme().theme}`} style={{border:'2px skyblue solid'}} onClick={fetchUser} disabled={isLoading}>{isLoading ? '更新中...' : '刷新数据'}</Button>
             <FortuneBtn />
