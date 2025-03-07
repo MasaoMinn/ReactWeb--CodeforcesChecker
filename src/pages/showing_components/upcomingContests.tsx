@@ -2,6 +2,7 @@ import { useTheme } from '@/components/themeProvider';
 import axios, { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import "bootstrap-icons/font/bootstrap-icons.css";
 interface Contest {
   id: number,
   name: string,
@@ -16,6 +17,16 @@ export default ()=> {
 const [contestList,setContestList]=useState<Contest[]>([]);
 const [upcomingContests,setUpcomingContests]=useState<Contest[]>([]);
 const [isLoading,setIsLoading]=useState(true);
+const [isGym,setIsGym]=useState(false);
+
+function GymToggle() {
+  console.log(isGym);
+  return (
+    <div onClick={()=>setIsGym(isGym=>!isGym)} style={{cursor:'pointer'}} className="text-center">
+      {isGym?<i className="bi bi-toggle-off"></i>:<i className="bi bi-toggle-on"></i>}
+    </div>
+  )
+}
 async function getContestList() {
   try {
     setIsLoading(true);
@@ -25,7 +36,7 @@ async function getContestList() {
     });
 
     // 发起 GET 请求
-    const response = await axiosInstance.get('https://codeforces.com/api/contest.list?gym=false');
+    const response = await axiosInstance.get('https://codeforces.com/api/contest.list?'+'gym='+String(isGym));
     setContestList(response.data.result);
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -72,7 +83,7 @@ function getTimeInteval(milliseconds:number) {
   // 在组件挂载时获取竞赛列表
   useEffect(() => {
     getContestList();
-  }, []);
+  }, [isGym]);
 
   // 当 contestList 改变时，更新即将到来的竞赛列表
   useEffect(() => {
@@ -118,7 +129,10 @@ const gridStyles = {
   <Container className='text-center' style={{ overflow: 'auto',border: dynamicStyles.containerBorder,
   backgroundColor: theme === 'dark' ? 'rgba(0,0,0,0.85)' : 'white'}}>
   {isLoading && (<p>Loading...</p>)}
-  <Row style={gridStyles.headerRow}><h1>Upcoming Contests</h1></Row>
+  <Row style={gridStyles.headerRow}>
+    <Col className='col-11'><h1>Upcoming Contests</h1></Col>
+    <Col className='col-1'>gym<GymToggle /></Col>
+  </Row>
   <Row style={gridStyles.headerRow}>
     <Col className='col-1' style={gridStyles.colBorder}><b>Contest ID</b></Col>
     <Col className='col-5' style={gridStyles.colBorder}><b>Contest Name</b></Col>
@@ -127,11 +141,7 @@ const gridStyles = {
   </Row>
 
   {upcomingContests.map((contest) => (
-    <Row 
-      key={contest.id} 
-      style={gridStyles.dataRow}
-      className="p-0" // 覆盖默认 padding
-    >
+    <Row key={contest.id} style={gridStyles.dataRow} className="p-0">
       <Col className='col-1' style={gridStyles.colBorder}>{contest.id}</Col>
       <Col className='col-5' style={gridStyles.colBorder}>{contest.name}</Col>
       <Col className='col-3' style={gridStyles.colBorder}>{getTimeInteval(-contest.relativeTimeSeconds*1000)}</Col>
