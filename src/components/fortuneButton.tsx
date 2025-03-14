@@ -101,7 +101,6 @@ function simpleHash(str: string): number {
     return hash<0?-hash:hash;
 }
 function FortuneTeller() {//根据日期和用户信息生成运势
-    let user:string=useUserInfo().userInfo;
     const date=new Date();
     if(calendar.isHoliday(date.toDateString())) {//节假日fortune好
         return (
@@ -117,7 +116,7 @@ function FortuneTeller() {//根据日期和用户信息生成运势
     let fortune:number = (var1+var2)%9;
     if(fortune<0) fortune=-fortune;
     console.log(fortune);
-    const fcolor=colors32[(var1*3+var2*5)%32];
+    const fcolor=colors32[(var1*28+var2*4)%32];
 
     return (
         <Container className="text-center">
@@ -143,7 +142,7 @@ function FortuneTeller() {//根据日期和用户信息生成运势
             <Row style={{color:fcolor[2], fontSize: '1.5vw'}}>
                 幸运数字：
                 {fortune===0&&`无幸运数字`}
-                {fortune!=0&&(var1+var2<<3)%100}
+                {fortune!=0&&(var1*97+var2<<3)%101}
             </Row>
 
             
